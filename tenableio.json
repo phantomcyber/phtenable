@@ -1,0 +1,561 @@
+{
+    "appid": "81ef4e9b-f065-49b0-9400-6f457f4f83d6",
+    "name": "Tenable.io",
+    "description": "This app implements several actions for interacting with Tenable.io",
+    "type": "information",
+    "product_vendor": "Tenable",
+    "logo": "tenableio.png",
+    "logo_dark": "tenableio_dark.png",
+    "product_name": "Tenable.io",
+    "python_version": "3",
+    "product_version_regex": ".*",
+    "publisher": "Splunk",
+    "license": "Copyright (c) Splunk, 2021",
+    "app_version": "1.0.0",
+    "utctime_updated": "2021-04-13T21:45:44.901455Z",
+    "package_name": "phantom_tenableio",
+    "main_module": "tenableio_connector.py",
+    "min_phantom_version": "4.9.39220",
+    "app_wizard_version": "1.0.0",
+    "pip_dependencies": {
+        "wheel": [
+            {
+                "module": "tenable",
+                "input_file": "wheels/pyTenable-1.2.8-py3-none-any.whl"
+            },
+            {
+                "module": "restfly",
+                "input_file": "wheels/restfly-1.3.5-py3-none-any.whl"
+            },
+            {
+                "module": "python_box",
+                "input_file": "wheels/python_box-5.3.0-py3-none-any.whl"
+            }
+        ]
+    },
+    "configuration": {
+        "access_key": {
+            "description": "Access Key",
+            "data_type": "password",
+            "required": true,
+            "order": 0
+        },
+        "secret_key": {
+            "description": "Secret Key",
+            "data_type": "password",
+            "required": true,
+            "order": 1
+        },
+        "verify_server_cert": {
+            "description": "Verify sever certificate",
+            "data_type": "boolean",
+            "required": false,
+            "default": true,
+            "order": 2
+        }
+    },
+    "actions": [
+        {
+            "action": "test connectivity",
+            "identifier": "test_connectivity",
+            "description": "Validate the asset configuration for connectivity using supplied configuration",
+            "verbose": "",
+            "type": "test",
+            "read_only": true,
+            "parameters": {},
+            "output": [],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "assign tags",
+            "identifier": "assign_tags",
+            "description": "Assigns the tag category/value pairs defined to the assets defined.",
+            "verbose": "",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "assets": {
+                    "description": "A list of Asset UUIDs.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0
+                },
+                "tags": {
+                    "description": "A list of tag category/value pair UUIDs.",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.assets",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "assets",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.tags",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "tags",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list tags",
+            "identifier": "list_tags",
+            "description": "Retrieves a list of tag category/value pairs based off of the filters defined within the query.",
+            "verbose": "",
+            "type": "generic",
+            "read_only": true,
+            "parameters": {},
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list assets",
+            "identifier": "list_assets",
+            "description": "Export asset data from Tenable.io.",
+            "verbose": "",
+            "type": "generic",
+            "read_only": true,
+            "parameters": {
+                "created_at": {
+                    "description": "Returns all assets created after the specified unix timestamp.",
+                    "data_type": "numeric",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0
+                },
+                "updated_at": {
+                    "description": "Returns all assets updated after the specified unix timestamp.",
+                    "data_type": "numeric",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.created_at",
+                    "data_type": "numeric",
+                    "contains": [],
+                    "column_name": "created_at",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.updated_at",
+                    "data_type": "numeric",
+                    "contains": [],
+                    "column_name": "updated_at",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list agents",
+            "identifier": "list_agents",
+            "description": "Get the listing of configured agents from Tenable.io.",
+            "verbose": "",
+            "type": "generic",
+            "read_only": true,
+            "parameters": {
+                "filters": {
+                    "description": "Filters are tuples in the form of (‘NAME’, ‘OPERATOR’, ‘VALUE’). Multiple filters can be used and will filter down the data being returned from the API.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.filters",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "filters",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list scan results",
+            "identifier": "list_scan_results",
+            "description": "Return the scan results from either the latest scan or a specific scan instance in the history.",
+            "verbose": "",
+            "type": "generic",
+            "read_only": true,
+            "parameters": {
+                "scan_id": {
+                    "description": "The unique identifier for the scan.",
+                    "data_type": "numeric",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.scan_id",
+                    "data_type": "numeric",
+                    "contains": [],
+                    "column_name": "scan_id",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list scans",
+            "identifier": "list_scans",
+            "description": "Retrieve the list of configured scans",
+            "verbose": "",
+            "type": "generic",
+            "read_only": true,
+            "parameters": {},
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list vulnerabilities",
+            "identifier": "list_vulnerabilities",
+            "description": "Initiate a vulnerability export",
+            "verbose": "",
+            "type": "generic",
+            "read_only": true,
+            "parameters": {
+                "cidr_range": {
+                    "description": "Restrict the export to only vulns assigned to assets within the CIDR range specified.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0
+                },
+                "first_found": {
+                    "description": "Specifies the earliest time for a vulnerability to have been discovered. Format is a unix timestamp integer.",
+                    "data_type": "numeric",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 1
+                },
+                "last_fixed": {
+                    "description": "Specifies the earliest time that vulnerabilities may have been fixed. Format is a unix timestamp integer.",
+                    "data_type": "numeric",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 2
+                },
+                "last_found": {
+                    "description": "Specifies the earliest time that a vulnerability may have been last seen. Format is a unix timestamp integer.",
+                    "data_type": "numeric",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 3
+                },
+                "plugin_family": {
+                    "description": "list of plugin families to restrict the export to. Please note that this parameter’s values are case sensitive.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 4
+                },
+                "plugin_ids": {
+                    "description": "A list of plugin id’s to explicitly export.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 5
+                },
+                "severity": {
+                    "description": "list of severities to include as part of the export. Supported values are info, low, medium, high, and critical.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 6
+                },
+                "state": {
+                    "description": "list of object states to be returned. Supported values are open, reopened, and fixed.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 7
+                },
+                "tags": {
+                    "description": "List of tag key-value pairs that must be associated to the vulnerability data to be returned. Key-value pairs are tuples ('key', 'value') and are case-sensitive.",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": false,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 8
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.cidr_range",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "cidr_range",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.first_found",
+                    "data_type": "numeric",
+                    "contains": [],
+                    "column_name": "first_found",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.parameter.last_fixed",
+                    "data_type": "numeric",
+                    "contains": [],
+                    "column_name": "last_fixed",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.parameter.last_found",
+                    "data_type": "numeric",
+                    "contains": [],
+                    "column_name": "last_found",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.parameter.plugin_family",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "plugin_family",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.parameter.plugin_ids",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "plugin_ids",
+                    "column_order": 5
+                },
+                {
+                    "data_path": "action_result.parameter.severity",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "severity",
+                    "column_order": 6
+                },
+                {
+                    "data_path": "action_result.parameter.state",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "state",
+                    "column_order": 7
+                },
+                {
+                    "data_path": "action_result.parameter.tags",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "tags",
+                    "column_order": 8
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 9
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        }
+    ]
+}
