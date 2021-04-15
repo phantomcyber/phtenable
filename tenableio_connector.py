@@ -15,6 +15,7 @@ import requests
 import json
 from bs4 import BeautifulSoup
 
+import ast
 import tenable
 from tenable.io import TenableIO
 
@@ -172,9 +173,9 @@ class TenableioConnector(BaseConnector):
             action_result.set_status(phantom.APP_SUCCESS)
             self.save_progress("Test Connectivity Passed")
         except Exception as e:
-            action_result.set_status(phantom.APP_ERROR)
+            action_result.set_status(phantom.APP_ERROR, str(e))
             self.save_progress("Test Connectivity Failed.")
-            self.save_progress(e)
+            self.save_progress(str(e))
 
         return action_result.get_status()
 
@@ -189,38 +190,31 @@ class TenableioConnector(BaseConnector):
         # Access action parameters passed in the 'param' dictionary
 
         # Required values can be accessed directly
+        action = param['action']
         assets = param['assets']
         tags = param['tags']
 
         # Optional values should use the .get() function
         # optional_parameter = param.get('optional_parameter', 'default_value')
 
-        # make rest call
-        ret_val, response = self._make_rest_call(
-            '/endpoint', action_result, params=None, headers=None
-        )
+        assets = assets.split(',') if assets else []
+        tags = tags.split(',') if tags else []
 
-        if phantom.is_fail(ret_val):
-            # the call to the 3rd party device or service failed, action result should contain all the error details
-            # for now the return is commented out, but after implementation, return from here
-            # return action_result.get_status()
-            pass
-
-        # Now post process the data,  uncomment code as you deem fit
+        try:
+            response = self._tio.assets.assign_tags(action, assets, tags)
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, str(e))
 
         # Add the response into the data section
         action_result.add_data(response)
 
         # Add a dictionary that is made up of the most important values from data into the summary
-        # summary = action_result.update_summary({})
-        # summary['num_data'] = len(action_result['data'])
+        summary = action_result.update_summary({})
+        summary['assets_updated'] = len(assets)
 
         # Return success, no need to set the message, only the status
         # BaseConnector will create a textual message based off of the summary dictionary
-        # return action_result.set_status(phantom.APP_SUCCESS)
-
-        # For now return Error with a message, in case of success we don't set the message, but use the summary
-        return action_result.set_status(phantom.APP_ERROR, "Action not yet implemented")
+        return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_list_tags(self, param):
         # Implement the handler here
@@ -238,32 +232,23 @@ class TenableioConnector(BaseConnector):
         # Optional values should use the .get() function
         # optional_parameter = param.get('optional_parameter', 'default_value')
 
-        # make rest call
-        ret_val, response = self._make_rest_call(
-            '/endpoint', action_result, params=None, headers=None
-        )
-
-        if phantom.is_fail(ret_val):
-            # the call to the 3rd party device or service failed, action result should contain all the error details
-            # for now the return is commented out, but after implementation, return from here
-            # return action_result.get_status()
-            pass
-
-        # Now post process the data,  uncomment code as you deem fit
+        try:
+            tags = self._tio.tags.list()
+            data = [tag for tag in tags]
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, str(e))
 
         # Add the response into the data section
-        action_result.add_data(response)
+        action_result.add_data(data)
 
         # Add a dictionary that is made up of the most important values from data into the summary
-        # summary = action_result.update_summary({})
-        # summary['num_data'] = len(action_result['data'])
+        summary = action_result.update_summary({})
+        summary['total_objects'] = tags.count
+        summary['total_objects_successful'] = len(data)
 
         # Return success, no need to set the message, only the status
         # BaseConnector will create a textual message based off of the summary dictionary
-        # return action_result.set_status(phantom.APP_SUCCESS)
-
-        # For now return Error with a message, in case of success we don't set the message, but use the summary
-        return action_result.set_status(phantom.APP_ERROR, "Action not yet implemented")
+        return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_list_assets(self, param):
         # Implement the handler here
@@ -282,32 +267,29 @@ class TenableioConnector(BaseConnector):
         created_at = param.get('created_at', '')
         updated_at = param.get('updated_at', '')
 
-        # make rest call
-        ret_val, response = self._make_rest_call(
-            '/endpoint', action_result, params=None, headers=None
-        )
+        try:
+            created_at = int(created_at) if created_at else None
+            updated_at = int(updated_at) if updated_at else None
+        except ValueError:
+            return action_result.set_status(phantom.APP_ERROR, "time fields must be a valid unix timestamp integer")
 
-        if phantom.is_fail(ret_val):
-            # the call to the 3rd party device or service failed, action result should contain all the error details
-            # for now the return is commented out, but after implementation, return from here
-            # return action_result.get_status()
-            pass
-
-        # Now post process the data,  uncomment code as you deem fit
+        try:
+            assets = self._tio.exports.assets()
+            data = [asset for asset in assets]
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, str(e))
 
         # Add the response into the data section
-        action_result.add_data(response)
+        action_result.add_data(data)
 
         # Add a dictionary that is made up of the most important values from data into the summary
-        # summary = action_result.update_summary({})
-        # summary['num_data'] = len(action_result['data'])
+        summary = action_result.update_summary({})
+        summary['total_objects'] = assets.count
+        summary['total_objects_successful'] = len(data)
 
         # Return success, no need to set the message, only the status
         # BaseConnector will create a textual message based off of the summary dictionary
-        # return action_result.set_status(phantom.APP_SUCCESS)
-
-        # For now return Error with a message, in case of success we don't set the message, but use the summary
-        return action_result.set_status(phantom.APP_ERROR, "Action not yet implemented")
+        return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_list_agents(self, param):
         # Implement the handler here
@@ -325,32 +307,28 @@ class TenableioConnector(BaseConnector):
         # Optional values should use the .get() function
         filters = param.get('filters', '')
 
-        # make rest call
-        ret_val, response = self._make_rest_call(
-            '/endpoint', action_result, params=None, headers=None
-        )
+        # We have to convert a string to a tuple for filters. ast.literal_eval provides a safe way to convert
+        # this string to a python list of tuples without using eval. See python documentation:
+        # https://docs.python.org/3/library/ast.html#ast.literal_eval
+        filters = list(ast.literal_eval(filters)) if filters else []
 
-        if phantom.is_fail(ret_val):
-            # the call to the 3rd party device or service failed, action result should contain all the error details
-            # for now the return is commented out, but after implementation, return from here
-            # return action_result.get_status()
-            pass
-
-        # Now post process the data,  uncomment code as you deem fit
+        try:
+            agents = self._tio.agents.list(*filters)
+            data = [agent for agent in agents]
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, str(e))
 
         # Add the response into the data section
-        action_result.add_data(response)
+        action_result.add_data(data)
 
         # Add a dictionary that is made up of the most important values from data into the summary
-        # summary = action_result.update_summary({})
-        # summary['num_data'] = len(action_result['data'])
+        summary = action_result.update_summary({})
+        summary['total_objects'] = agents.count
+        summary['total_objects_successful'] = len(data)
 
         # Return success, no need to set the message, only the status
         # BaseConnector will create a textual message based off of the summary dictionary
-        # return action_result.set_status(phantom.APP_SUCCESS)
-
-        # For now return Error with a message, in case of success we don't set the message, but use the summary
-        return action_result.set_status(phantom.APP_ERROR, "Action not yet implemented")
+        return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_list_scan_results(self, param):
         # Implement the handler here
@@ -364,36 +342,28 @@ class TenableioConnector(BaseConnector):
 
         # Required values can be accessed directly
         # required_parameter = param['required_parameter']
+        scan_id = param['scan_id']
 
         # Optional values should use the .get() function
-        scan_id = param.get('scan_id', '')
+        # optional_parameter = param.get('optional_parameter', 'default_value')
 
-        # make rest call
-        ret_val, response = self._make_rest_call(
-            '/endpoint', action_result, params=None, headers=None
-        )
-
-        if phantom.is_fail(ret_val):
-            # the call to the 3rd party device or service failed, action result should contain all the error details
-            # for now the return is commented out, but after implementation, return from here
-            # return action_result.get_status()
-            pass
-
-        # Now post process the data,  uncomment code as you deem fit
+        try:
+            vulns = self._tio.scans.results(scan_id)
+            data = [vuln for vuln in vulns]
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, str(e))
 
         # Add the response into the data section
-        action_result.add_data(response)
+        action_result.add_data(data)
 
         # Add a dictionary that is made up of the most important values from data into the summary
-        # summary = action_result.update_summary({})
-        # summary['num_data'] = len(action_result['data'])
+        summary = action_result.update_summary({})
+        summary['total_objects'] = vulns.count
+        summary['total_objects_successful'] = len(data)
 
         # Return success, no need to set the message, only the status
         # BaseConnector will create a textual message based off of the summary dictionary
-        # return action_result.set_status(phantom.APP_SUCCESS)
-
-        # For now return Error with a message, in case of success we don't set the message, but use the summary
-        return action_result.set_status(phantom.APP_ERROR, "Action not yet implemented")
+        return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_list_scans(self, param):
         # Implement the handler here
@@ -411,32 +381,23 @@ class TenableioConnector(BaseConnector):
         # Optional values should use the .get() function
         # optional_parameter = param.get('optional_parameter', 'default_value')
 
-        # make rest call
-        ret_val, response = self._make_rest_call(
-            '/endpoint', action_result, params=None, headers=None
-        )
-
-        if phantom.is_fail(ret_val):
-            # the call to the 3rd party device or service failed, action result should contain all the error details
-            # for now the return is commented out, but after implementation, return from here
-            # return action_result.get_status()
-            pass
-
-        # Now post process the data,  uncomment code as you deem fit
+        try:
+            scans = self._tio.scans.list()
+            data = [scan for scan in scans]
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, str(e))
 
         # Add the response into the data section
-        action_result.add_data(response)
+        action_result.add_data(data)
 
         # Add a dictionary that is made up of the most important values from data into the summary
-        # summary = action_result.update_summary({})
-        # summary['num_data'] = len(action_result['data'])
+        summary = action_result.update_summary({})
+        summary['total_objects'] = scans.count
+        summary['total_objects_successful'] = len(data)
 
         # Return success, no need to set the message, only the status
         # BaseConnector will create a textual message based off of the summary dictionary
-        # return action_result.set_status(phantom.APP_SUCCESS)
-
-        # For now return Error with a message, in case of success we don't set the message, but use the summary
-        return action_result.set_status(phantom.APP_ERROR, "Action not yet implemented")
+        return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_list_vulnerabilities(self, param):
         # Implement the handler here
@@ -462,32 +423,61 @@ class TenableioConnector(BaseConnector):
         state = param.get('state', '')
         tags = param.get('tags', '')
 
-        # make rest call
-        ret_val, response = self._make_rest_call(
-            '/endpoint', action_result, params=None, headers=None
-        )
+        # Clean params
+        try:
+            first_found = int(first_found) if first_found else None
+            last_fixed = int(last_fixed) if last_fixed else None
+            last_found = int(last_found) if last_found else None
+        except ValueError:
+            return action_result.set_status(phantom.APP_ERROR, "time fields must be a valid unix timestamp integer")
 
-        if phantom.is_fail(ret_val):
-            # the call to the 3rd party device or service failed, action result should contain all the error details
-            # for now the return is commented out, but after implementation, return from here
-            # return action_result.get_status()
-            pass
+        try:
+            if plugin_ids:
+                plugin_ids = [int(plugin_id) for plugin_id in plugin_ids.split(',')]
+            else:
+                plugin_ids = []
+        except ValueError:
+            return action_result.set_status(phantom.APP_ERROR, "plugin_ids must be integers")
 
-        # Now post process the data,  uncomment code as you deem fit
+        cidr_range = cidr_range or None
+        plugin_family = plugin_family.split(',') if plugin_family else []
+        severity = severity.split(',') if severity else []
+        state = state.split(',') if state else []
+
+        # We have to convert a string to a tuple for tags. ast.literal_eval provides a safe way to convert
+        # this string to a python list of tuples without using eval. See python documentation:
+        # https://docs.python.org/3/library/ast.html#ast.literal_eval
+        tags = list(ast.literal_eval(tags)) if tags else []
+
+        try:
+            self.save_progress("Starting vulnerability export.")
+            vulns = self._tio.exports.vulns(
+                cidr_range=cidr_range,
+                first_found=first_found,
+                last_fixed=last_fixed,
+                last_found=last_found,
+                plugin_family=plugin_family,
+                plugin_ids=plugin_ids,
+                severity=severity,
+                state=state,
+                tags=tags
+            )
+            data = [vuln for vuln in vulns]
+            self.save_progress("Vulnerability export finished successfully.")
+        except Exception as e:
+            return action_result.set_status(phantom.APP_ERROR, str(e))
 
         # Add the response into the data section
-        action_result.add_data(response)
+        action_result.add_data(data)
 
         # Add a dictionary that is made up of the most important values from data into the summary
-        # summary = action_result.update_summary({})
-        # summary['num_data'] = len(action_result['data'])
+        summary = action_result.update_summary({})
+        summary['total_objects'] = vulns.count
+        summary['total_objects_successful'] = len(data)
 
         # Return success, no need to set the message, only the status
         # BaseConnector will create a textual message based off of the summary dictionary
-        # return action_result.set_status(phantom.APP_SUCCESS)
-
-        # For now return Error with a message, in case of success we don't set the message, but use the summary
-        return action_result.set_status(phantom.APP_ERROR, "Action not yet implemented")
+        return action_result.set_status(phantom.APP_SUCCESS)
 
     def handle_action(self, param):
         ret_val = phantom.APP_SUCCESS

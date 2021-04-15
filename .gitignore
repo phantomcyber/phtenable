@@ -322,3 +322,6 @@ $RECYCLE.BIN/
 *.bak
 state_file
 !scripts
+
+*test.py
+json2datapath.py
