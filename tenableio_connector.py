@@ -17,10 +17,8 @@ from bs4 import BeautifulSoup
 
 import ast
 import dateutil.parser
-import traceback
 from datetime import datetime
 from tenable.io import TenableIO
-
 
 from typing import List, Any, Callable, Union
 
@@ -259,11 +257,11 @@ class TenableioConnector(BaseConnector):
         # Optional values should use the .get() function
         # optional_parameter = param.get("optional_parameter", "default_value")
 
-        assets = assets.split(",") if assets else []
-        tags = tags.split(",") if tags else []
+        parsed_assets = self._parse_list_field(assets, item_type=str)
+        parsed_tags = self._parse_list_field(tags, item_type=str)
 
         try:
-            response = self._tio.assets.assign_tags(action, assets, tags)
+            response = self._tio.assets.assign_tags(action, parsed_assets, parsed_tags)
         except Exception as e:
             return action_result.set_status(phantom.APP_ERROR, str(e))
 
@@ -272,7 +270,7 @@ class TenableioConnector(BaseConnector):
 
         # Add a dictionary that is made up of the most important values from data into the summary
         summary = action_result.update_summary({})
-        summary["assets_updated"] = len(assets)
+        summary["assets_updated"] = len(parsed_assets)
 
         # Return success, no need to set the message, only the status
         # BaseConnector will create a textual message based off of the summary dictionary
@@ -329,13 +327,13 @@ class TenableioConnector(BaseConnector):
         updated_at = param.get("updated_at", "")
 
         try:
-            created_at = int(created_at) if created_at else None
-            updated_at = int(updated_at) if updated_at else None
-        except ValueError:
-            return action_result.set_status(phantom.APP_ERROR, "time fields must be a valid unix timestamp integer")
+            parsed_created_at = int(self._parse_datetime_field(created_at).timestamp()) if created_at else None
+            parsed_updated_at = int(self._parse_datetime_field(updated_at).timestamp()) if updated_at else None
 
-        try:
-            assets = self._tio.exports.assets()
+            assets = self._tio.exports.assets(
+                created_at=parsed_created_at,
+                updated_at=parsed_updated_at
+            )
             data = [asset for asset in assets]
         except Exception as e:
             return action_result.set_status(phantom.APP_ERROR, str(e))
@@ -370,10 +368,10 @@ class TenableioConnector(BaseConnector):
         # We have to convert a string to a tuple for filters. ast.literal_eval provides a safe way to convert
         # this string to a python list of tuples without using eval. See python documentation:
         # https://docs.python.org/3/library/ast.html#ast.literal_eval
-        filters = list(ast.literal_eval(filters)) if filters else []
+        parsed_filters = ast.literal_eval(filters) if filters else []
 
         try:
-            agents = self._tio.agents.list(*filters)
+            agents = self._tio.agents.list(*parsed_filters)
             data = [agent for agent in agents]
         except Exception as e:
             return action_result.set_status(phantom.APP_ERROR, str(e))
