@@ -16,8 +16,13 @@ import json
 from bs4 import BeautifulSoup
 
 import ast
-import tenable
+import dateutil.parser
+import traceback
+from datetime import datetime
 from tenable.io import TenableIO
+
+
+from typing import List, Any, Callable, Union
 
 
 class RetVal(tuple):
@@ -57,15 +62,15 @@ class TenableioConnector(BaseConnector):
         try:
             soup = BeautifulSoup(response.text, "html.parser")
             error_text = soup.text
-            split_lines = error_text.split('\n')
+            split_lines = error_text.split("\n")
             split_lines = [x.strip() for x in split_lines if x.strip()]
-            error_text = '\n'.join(split_lines)
+            error_text = "\n".join(split_lines)
         except:
             error_text = "Cannot parse error details"
 
         message = "Status Code: {0}. Data from server:\n{1}\n".format(status_code, error_text)
 
-        message = message.replace(u'{', '{{').replace(u'}', '}}')
+        message = message.replace(u"{", "{{").replace(u"}", "}}")
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
     def _process_json_response(self, r, action_result):
@@ -86,39 +91,39 @@ class TenableioConnector(BaseConnector):
         # You should process the error returned in the json
         message = "Error from server. Status Code: {0} Data from server: {1}".format(
             r.status_code,
-            r.text.replace(u'{', '{{').replace(u'}', '}}')
+            r.text.replace(u"{", "{{").replace(u"}", "}}")
         )
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
     def _process_response(self, r, action_result):
         # store the r_text in debug data, it will get dumped in the logs if the action fails
-        if hasattr(action_result, 'add_debug_data'):
-            action_result.add_debug_data({'r_status_code': r.status_code})
-            action_result.add_debug_data({'r_text': r.text})
-            action_result.add_debug_data({'r_headers': r.headers})
+        if hasattr(action_result, "add_debug_data"):
+            action_result.add_debug_data({"r_status_code": r.status_code})
+            action_result.add_debug_data({"r_text": r.text})
+            action_result.add_debug_data({"r_headers": r.headers})
 
-        # Process each 'Content-Type' of response separately
+        # Process each "Content-Type" of response separately
 
         # Process a json response
-        if 'json' in r.headers.get('Content-Type', ''):
+        if "json" in r.headers.get("Content-Type", ""):
             return self._process_json_response(r, action_result)
 
         # Process an HTML response, Do this no matter what the api talks.
         # There is a high chance of a PROXY in between phantom and the rest of
-        # world, in case of errors, PROXY's return HTML, this function parses
+        # world, in case of errors, PROXY"s return HTML, this function parses
         # the error and adds it to the action_result.
-        if 'html' in r.headers.get('Content-Type', ''):
+        if "html" in r.headers.get("Content-Type", ""):
             return self._process_html_response(r, action_result)
 
-        # it's not content-type that is to be parsed, handle an empty response
+        # it"s not content-type that is to be parsed, handle an empty response
         if not r.text:
             return self._process_empty_response(r, action_result)
 
         # everything else is actually an error at this point
         message = "Can't process response from server. Status Code: {0} Data from server: {1}".format(
             r.status_code,
-            r.text.replace('{', '{{').replace('}', '}}')
+            r.text.replace("{", "{{").replace("}", "}}")
         )
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
@@ -145,7 +150,7 @@ class TenableioConnector(BaseConnector):
             r = request_func(
                 url,
                 # auth=(username, password),  # basic authentication
-                verify=config.get('verify_server_cert', False),
+                verify=config.get("verify_server_cert", False),
                 **kwargs
             )
         except Exception as e:
@@ -156,6 +161,63 @@ class TenableioConnector(BaseConnector):
             )
 
         return self._process_response(r, action_result)
+
+    def _parse_list_field(self, input_str: str, item_type: Callable = str) -> List[Any]:
+        """
+        Parses a string input into a list.
+        The input string can be a JSON formatted list or comma separated list.
+        Output with be the parsed input string as a list.
+
+        Args:
+            input_str (str):
+                input string to parse
+            item_type (Callable):
+                a function to convert the type of each item of the list.
+                an exception is thrown if converstion fails.
+                (default: str)
+
+        Returns:
+            List representation of parsed input. If input is the empty string, empty list is returned.
+        """
+        if input_str == "":
+            return []
+
+        try:
+            parsed_input = json.loads(input_str)
+        except json.JSONDecodeError:
+            parsed_input = input_str.split(",")
+
+        try:
+            parsed_input = [item_type(item.strip()) for item in parsed_input]
+        except Exception:
+            raise TypeError(
+                "Invalid item value for string to list conversion. Expected item type {}, got {}".format(
+                    str(item_type),
+                    input_str
+                )
+            )
+        return parsed_input
+
+    def _parse_datetime_field(self, input_time: Union[str, int]) -> datetime:
+        """
+        Parses the input into a datetime object. Input can be a timestamp or iso formatted string
+
+        Args:
+            input_time (str, int):
+                either a timestamp (epoch) integer, or an iso formatted datetime string
+
+        Returns:
+            Parsed datetime object
+        """
+        parsed_input = None
+        try:
+            parsed_input = datetime.fromtimestamp(input_time)
+        except Exception:
+            try:
+                parsed_input = dateutil.parser.isoparse(input_time)
+            except Exception:
+                raise ValueError("Cannot parse datetime field: {}".format(input_time))
+        return parsed_input
 
     def _handle_test_connectivity(self, param):
         # Add an action result object to self (BaseConnector) to represent the action for this param
@@ -187,18 +249,18 @@ class TenableioConnector(BaseConnector):
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        # Access action parameters passed in the 'param' dictionary
+        # Access action parameters passed in the "param" dictionary
 
         # Required values can be accessed directly
-        action = param['action']
-        assets = param['assets']
-        tags = param['tags']
+        action = param["action"]
+        assets = param["assets"]
+        tags = param["tags"]
 
         # Optional values should use the .get() function
-        # optional_parameter = param.get('optional_parameter', 'default_value')
+        # optional_parameter = param.get("optional_parameter", "default_value")
 
-        assets = assets.split(',') if assets else []
-        tags = tags.split(',') if tags else []
+        assets = assets.split(",") if assets else []
+        tags = tags.split(",") if tags else []
 
         try:
             response = self._tio.assets.assign_tags(action, assets, tags)
@@ -210,7 +272,7 @@ class TenableioConnector(BaseConnector):
 
         # Add a dictionary that is made up of the most important values from data into the summary
         summary = action_result.update_summary({})
-        summary['assets_updated'] = len(assets)
+        summary["assets_updated"] = len(assets)
 
         # Return success, no need to set the message, only the status
         # BaseConnector will create a textual message based off of the summary dictionary
@@ -224,13 +286,13 @@ class TenableioConnector(BaseConnector):
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        # Access action parameters passed in the 'param' dictionary
+        # Access action parameters passed in the "param" dictionary
 
         # Required values can be accessed directly
-        # required_parameter = param['required_parameter']
+        # required_parameter = param["required_parameter"]
 
         # Optional values should use the .get() function
-        # optional_parameter = param.get('optional_parameter', 'default_value')
+        # optional_parameter = param.get("optional_parameter", "default_value")
 
         try:
             tags = self._tio.tags.list()
@@ -243,8 +305,7 @@ class TenableioConnector(BaseConnector):
 
         # Add a dictionary that is made up of the most important values from data into the summary
         summary = action_result.update_summary({})
-        summary['total_objects'] = tags.count
-        summary['total_objects_successful'] = len(data)
+        summary["tag_count"] = len(data)
 
         # Return success, no need to set the message, only the status
         # BaseConnector will create a textual message based off of the summary dictionary
@@ -258,14 +319,14 @@ class TenableioConnector(BaseConnector):
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        # Access action parameters passed in the 'param' dictionary
+        # Access action parameters passed in the "param" dictionary
 
         # Required values can be accessed directly
-        # required_parameter = param['required_parameter']
+        # required_parameter = param["required_parameter"]
 
         # Optional values should use the .get() function
-        created_at = param.get('created_at', '')
-        updated_at = param.get('updated_at', '')
+        created_at = param.get("created_at", "")
+        updated_at = param.get("updated_at", "")
 
         try:
             created_at = int(created_at) if created_at else None
@@ -284,8 +345,7 @@ class TenableioConnector(BaseConnector):
 
         # Add a dictionary that is made up of the most important values from data into the summary
         summary = action_result.update_summary({})
-        summary['total_objects'] = assets.count
-        summary['total_objects_successful'] = len(data)
+        summary["asset_count"] = len(data)
 
         # Return success, no need to set the message, only the status
         # BaseConnector will create a textual message based off of the summary dictionary
@@ -299,13 +359,13 @@ class TenableioConnector(BaseConnector):
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        # Access action parameters passed in the 'param' dictionary
+        # Access action parameters passed in the "param" dictionary
 
         # Required values can be accessed directly
-        # required_parameter = param['required_parameter']
+        # required_parameter = param["required_parameter"]
 
         # Optional values should use the .get() function
-        filters = param.get('filters', '')
+        filters = param.get("filters", "")
 
         # We have to convert a string to a tuple for filters. ast.literal_eval provides a safe way to convert
         # this string to a python list of tuples without using eval. See python documentation:
@@ -323,8 +383,7 @@ class TenableioConnector(BaseConnector):
 
         # Add a dictionary that is made up of the most important values from data into the summary
         summary = action_result.update_summary({})
-        summary['total_objects'] = agents.count
-        summary['total_objects_successful'] = len(data)
+        summary["agent_count"] = len(data)
 
         # Return success, no need to set the message, only the status
         # BaseConnector will create a textual message based off of the summary dictionary
@@ -338,14 +397,14 @@ class TenableioConnector(BaseConnector):
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        # Access action parameters passed in the 'param' dictionary
+        # Access action parameters passed in the "param" dictionary
 
         # Required values can be accessed directly
-        # required_parameter = param['required_parameter']
-        scan_id = param['scan_id']
+        # required_parameter = param["required_parameter"]
+        scan_id = param["scan_id"]
 
         # Optional values should use the .get() function
-        # optional_parameter = param.get('optional_parameter', 'default_value')
+        # optional_parameter = param.get("optional_parameter", "default_value")
 
         try:
             vulns = self._tio.scans.results(scan_id)
@@ -358,8 +417,7 @@ class TenableioConnector(BaseConnector):
 
         # Add a dictionary that is made up of the most important values from data into the summary
         summary = action_result.update_summary({})
-        summary['total_objects'] = vulns.count
-        summary['total_objects_successful'] = len(data)
+        summary["vuln_count"] = len(data)
 
         # Return success, no need to set the message, only the status
         # BaseConnector will create a textual message based off of the summary dictionary
@@ -373,13 +431,13 @@ class TenableioConnector(BaseConnector):
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        # Access action parameters passed in the 'param' dictionary
+        # Access action parameters passed in the "param" dictionary
 
         # Required values can be accessed directly
-        # required_parameter = param['required_parameter']
+        # required_parameter = param["required_parameter"]
 
         # Optional values should use the .get() function
-        # optional_parameter = param.get('optional_parameter', 'default_value')
+        # optional_parameter = param.get("optional_parameter", "default_value")
 
         try:
             scans = self._tio.scans.list()
@@ -392,8 +450,7 @@ class TenableioConnector(BaseConnector):
 
         # Add a dictionary that is made up of the most important values from data into the summary
         summary = action_result.update_summary({})
-        summary['total_objects'] = scans.count
-        summary['total_objects_successful'] = len(data)
+        summary["scan_count"] = len(data)
 
         # Return success, no need to set the message, only the status
         # BaseConnector will create a textual message based off of the summary dictionary
@@ -407,60 +464,54 @@ class TenableioConnector(BaseConnector):
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        # Access action parameters passed in the 'param' dictionary
+        # Access action parameters passed in the "param" dictionary
 
         # Required values can be accessed directly
-        # required_parameter = param['required_parameter']
+        # required_parameter = param["required_parameter"]
 
         # Optional values should use the .get() function
-        cidr_range = param.get('cidr_range', '')
-        first_found = param.get('first_found', '')
-        last_fixed = param.get('last_fixed', '')
-        last_found = param.get('last_found', '')
-        plugin_family = param.get('plugin_family', '')
-        plugin_ids = param.get('plugin_ids', '')
-        severity = param.get('severity', '')
-        state = param.get('state', '')
-        tags = param.get('tags', '')
-
-        # Clean params
-        try:
-            first_found = int(first_found) if first_found else None
-            last_fixed = int(last_fixed) if last_fixed else None
-            last_found = int(last_found) if last_found else None
-        except ValueError:
-            return action_result.set_status(phantom.APP_ERROR, "time fields must be a valid unix timestamp integer")
+        cidr_range = param.get("cidr_range", "")
+        first_found = param.get("first_found", "")
+        last_fixed = param.get("last_fixed", "")
+        last_found = param.get("last_found", "")
+        plugin_family = param.get("plugin_family", "")
+        plugin_ids = param.get("plugin_ids", "")
+        severity = param.get("severity", "")
+        state = param.get("state", "")
+        tags = param.get("tags", "")
 
         try:
-            if plugin_ids:
-                plugin_ids = [int(plugin_id) for plugin_id in plugin_ids.split(',')]
+            # Format parameters
+            parsed_cidr_range = cidr_range or None
+
+            parsed_first_found = int(self._parse_datetime_field(first_found).timestamp()) if first_found else None
+            parsed_last_fixed = int(self._parse_datetime_field(last_fixed).timestamp()) if last_fixed else None
+            parsed_last_found = int(self._parse_datetime_field(last_found).timestamp()) if last_found else None
+
+            parsed_plugin_ids = self._parse_list_field(plugin_ids, item_type=int)
+            parsed_plugin_family = self._parse_list_field(plugin_family, item_type=str)
+            parsed_severity = self._parse_list_field(severity, item_type=str)
+            parsed_state = self._parse_list_field(state, item_type=str)
+
+            if tags:
+                try:
+                    parsed_tags = [(k, v) for k, v in json.loads(tags).iteritems()]
+                except Exception:
+                    raise ValueError("tags parameter must be a dict of key value pairs, got '{}' instead".format(tags))
             else:
-                plugin_ids = []
-        except ValueError:
-            return action_result.set_status(phantom.APP_ERROR, "plugin_ids must be integers")
+                parsed_tags = []
 
-        cidr_range = cidr_range or None
-        plugin_family = plugin_family.split(',') if plugin_family else []
-        severity = severity.split(',') if severity else []
-        state = state.split(',') if state else []
-
-        # We have to convert a string to a tuple for tags. ast.literal_eval provides a safe way to convert
-        # this string to a python list of tuples without using eval. See python documentation:
-        # https://docs.python.org/3/library/ast.html#ast.literal_eval
-        tags = list(ast.literal_eval(tags)) if tags else []
-
-        try:
             self.save_progress("Starting vulnerability export.")
             vulns = self._tio.exports.vulns(
-                cidr_range=cidr_range,
-                first_found=first_found,
-                last_fixed=last_fixed,
-                last_found=last_found,
-                plugin_family=plugin_family,
-                plugin_ids=plugin_ids,
-                severity=severity,
-                state=state,
-                tags=tags
+                cidr_range=parsed_cidr_range,
+                first_found=parsed_first_found,
+                last_fixed=parsed_last_fixed,
+                last_found=parsed_last_found,
+                plugin_family=parsed_plugin_family,
+                plugin_ids=parsed_plugin_ids,
+                severity=parsed_severity,
+                state=parsed_state,
+                tags=parsed_tags
             )
             data = [vuln for vuln in vulns]
             self.save_progress("Vulnerability export finished successfully.")
@@ -472,8 +523,7 @@ class TenableioConnector(BaseConnector):
 
         # Add a dictionary that is made up of the most important values from data into the summary
         summary = action_result.update_summary({})
-        summary['total_objects'] = vulns.count
-        summary['total_objects_successful'] = len(data)
+        summary["vuln_count"] = len(data)
 
         # Return success, no need to set the message, only the status
         # BaseConnector will create a textual message based off of the summary dictionary
@@ -487,28 +537,28 @@ class TenableioConnector(BaseConnector):
 
         self.debug_print("action_id", self.get_action_identifier())
 
-        if action_id == 'test_connectivity':
+        if action_id == "test_connectivity":
             ret_val = self._handle_test_connectivity(param)
 
-        elif action_id == 'assign_tags':
+        elif action_id == "assign_tags":
             ret_val = self._handle_assign_tags(param)
 
-        elif action_id == 'list_tags':
+        elif action_id == "list_tags":
             ret_val = self._handle_list_tags(param)
 
-        elif action_id == 'list_assets':
+        elif action_id == "list_assets":
             ret_val = self._handle_list_assets(param)
 
-        elif action_id == 'list_agents':
+        elif action_id == "list_agents":
             ret_val = self._handle_list_agents(param)
 
-        elif action_id == 'list_scan_results':
+        elif action_id == "list_scan_results":
             ret_val = self._handle_list_scan_results(param)
 
-        elif action_id == 'list_scans':
+        elif action_id == "list_scans":
             ret_val = self._handle_list_scans(param)
 
-        elif action_id == 'list_vulnerabilities':
+        elif action_id == "list_vulnerabilities":
             ret_val = self._handle_list_vulnerabilities(param)
 
         return ret_val
@@ -524,18 +574,18 @@ class TenableioConnector(BaseConnector):
         # Access values in asset config by the name
 
         # Required values can be accessed directly
-        required_config_name = config['required_config_name']
+        required_config_name = config["required_config_name"]
 
         # Optional values should use the .get() function
-        optional_config_name = config.get('optional_config_name')
+        optional_config_name = config.get("optional_config_name")
         """
 
         self._tio = TenableIO(
-            config['access_key'],
-            config['secret_key'],
+            config["access_key"],
+            config["secret_key"],
             ssl_verify=config.get("verify_server_cert", False),
-            vendor='Splunk',
-            product='Phantom',
+            vendor="Splunk",
+            product="Phantom",
         )
 
         return phantom.APP_SUCCESS
@@ -554,9 +604,9 @@ def main():
 
     argparser = argparse.ArgumentParser()
 
-    argparser.add_argument('input_test_json', help='Input Test JSON file')
-    argparser.add_argument('-u', '--username', help='username', required=False)
-    argparser.add_argument('-p', '--password', help='password', required=False)
+    argparser.add_argument("input_test_json", help="Input Test JSON file")
+    argparser.add_argument("-u", "--username", help="username", required=False)
+    argparser.add_argument("-p", "--password", help="password", required=False)
 
     args = argparser.parse_args()
     session_id = None
@@ -572,24 +622,24 @@ def main():
 
     if username and password:
         try:
-            login_url = TenableioConnector._get_phantom_base_url() + '/login'
+            login_url = TenableioConnector._get_phantom_base_url() + "/login"
 
             print("Accessing the Login page")
             r = requests.get(login_url, verify=False)
-            csrftoken = r.cookies['csrftoken']
+            csrftoken = r.cookies["csrftoken"]
 
             data = dict()
-            data['username'] = username
-            data['password'] = password
-            data['csrfmiddlewaretoken'] = csrftoken
+            data["username"] = username
+            data["password"] = password
+            data["csrfmiddlewaretoken"] = csrftoken
 
             headers = dict()
-            headers['Cookie'] = 'csrftoken=' + csrftoken
-            headers['Referer'] = login_url
+            headers["Cookie"] = "csrftoken=" + csrftoken
+            headers["Referer"] = login_url
 
             print("Logging into Platform to get the session id")
             r2 = requests.post(login_url, verify=False, data=data, headers=headers)
-            session_id = r2.cookies['sessionid']
+            session_id = r2.cookies["sessionid"]
         except Exception as e:
             print("Unable to get session id from the platform. Error: " + str(e))
             exit(1)
@@ -603,8 +653,8 @@ def main():
         connector.print_progress_message = True
 
         if session_id is not None:
-            in_json['user_session_token'] = session_id
-            connector._set_csrf_info(csrftoken, headers['Referer'])
+            in_json["user_session_token"] = session_id
+            connector._set_csrf_info(csrftoken, headers["Referer"])
 
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(json.dumps(json.loads(ret_val), indent=4))
@@ -612,5 +662,5 @@ def main():
     exit(0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
