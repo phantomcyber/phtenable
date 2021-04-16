@@ -88,7 +88,7 @@
                     "order": 0
                 },
                 "assets": {
-                    "description": "A comma separated list of asset UUIDs.",
+                    "description": "JSON formatted list or comma separated list of asset UUIDs.",
                     "data_type": "string",
                     "required": true,
                     "primary": false,
@@ -98,7 +98,7 @@
                     "order": 1
                 },
                 "tags": {
-                    "description": "A comma separated list of tag UUIDs.",
+                    "description": "JSON formatted list or comma separated list of tag UUIDs.",
                     "data_type": "string",
                     "required": true,
                     "primary": false,
@@ -192,7 +192,7 @@
             "read_only": true,
             "parameters": {
                 "created_at": {
-                    "description": "Returns all assets created after the specified unix timestamp.",
+                    "description": "Returns all assets created after the specified date. Input can be either a timestamp or iso formatted datetime string.",
                     "data_type": "numeric",
                     "required": false,
                     "primary": false,
@@ -202,7 +202,7 @@
                     "order": 0
                 },
                 "updated_at": {
-                    "description": "Returns all assets updated after the specified unix timestamp.",
+                    "description": "Returns all assets updated after the specified date. Input can be either a timestamp or iso formatted datetime string.",
                     "data_type": "numeric",
                     "required": false,
                     "primary": false,
@@ -311,7 +311,7 @@
             "read_only": true,
             "parameters": {
                 "scan_id": {
-                    "description": "The unique identifier for the scan.",
+                    "description": "The id or uuid for the scan.",
                     "data_type": "string",
                     "required": true,
                     "primary": true,
@@ -405,7 +405,7 @@
                     "order": 0
                 },
                 "first_found": {
-                    "description": "Specifies the earliest time for a vulnerability to have been discovered. Format is a unix timestamp integer.",
+                    "description": "Specifies the earliest time for a vulnerability to have been discovered. Input can be either a timestamp or iso formatted datetime string.",
                     "data_type": "numeric",
                     "required": false,
                     "primary": false,
@@ -415,7 +415,7 @@
                     "order": 1
                 },
                 "last_fixed": {
-                    "description": "Specifies the earliest time that vulnerabilities may have been fixed. Format is a unix timestamp integer.",
+                    "description": "Specifies the earliest time that vulnerabilities may have been fixed. Input can be either a timestamp or iso formatted datetime string.",
                     "data_type": "numeric",
                     "required": false,
                     "primary": false,
@@ -425,7 +425,7 @@
                     "order": 2
                 },
                 "last_found": {
-                    "description": "Specifies the earliest time that a vulnerability may have been last seen. Format is a unix timestamp integer.",
+                    "description": "Specifies the earliest time that a vulnerability may have been last seen. Input can be either a timestamp or iso formatted datetime string.",
                     "data_type": "numeric",
                     "required": false,
                     "primary": false,
@@ -435,7 +435,7 @@
                     "order": 3
                 },
                 "plugin_family": {
-                    "description": "comma separated list of plugin families to restrict the export to. Please note that this parameter’s values are case sensitive.",
+                    "description": "JSON formatted list or comma separated list of plugin families to restrict the export to. Please note that this parameter’s values are case sensitive.",
                     "data_type": "string",
                     "required": false,
                     "primary": false,
@@ -445,7 +445,7 @@
                     "order": 4
                 },
                 "plugin_ids": {
-                    "description": "comma separated list of plugin id’s to explicitly export.",
+                    "description": "JSON formatted list or comma separated list of plugin id’s to explicitly export.",
                     "data_type": "string",
                     "required": false,
                     "primary": false,
@@ -455,7 +455,7 @@
                     "order": 5
                 },
                 "severity": {
-                    "description": "comma separated list of severities to include as part of the export. Supported values are 'info', 'low', 'medium', 'high', and 'critical'.",
+                    "description": "JSON formatted list or comma separated list of severities to include as part of the export. Supported values are info, low, medium, high, and critical.",
                     "data_type": "string",
                     "required": false,
                     "primary": false,
@@ -465,7 +465,7 @@
                     "order": 6
                 },
                 "state": {
-                    "description": "comma separated list of object states to be returned. Supported values are 'open', 'reopened', and 'fixed'.",
+                    "description": "JSON formatted list or comma separated list of object states to be returned. Supported values are open, reopened, and fixed.",
                     "data_type": "string",
                     "required": false,
                     "primary": false,
@@ -475,7 +475,7 @@
                     "order": 7
                 },
                 "tags": {
-                    "description": "comma separated list of tag key-value pairs that must be associated to the vulnerability data to be returned. Key-value pairs are tuples ('key', 'value') and are case-sensitive.",
+                    "description": "JSON formatted dict of key-value pairs that must be associated to the vulnerability data to be returned. Key-value pairs are case-sensitive.",
                     "data_type": "string",
                     "required": false,
                     "primary": false,
