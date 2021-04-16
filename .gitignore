@@ -321,7 +321,8 @@ $RECYCLE.BIN/
 *.tgz
 *.bak
 state_file
-!scripts
+
+!wheels
 
 *test.py
 json2datapath.py
