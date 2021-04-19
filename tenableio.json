@@ -264,8 +264,6 @@
                     "data_type": "string",
                     "required": false,
                     "primary": false,
-                    "contains": [],
-                    "value_list": [],
                     "default": "",
                     "order": 0
                 }
@@ -273,28 +271,122 @@
             "output": [
                 {
                     "data_path": "action_result.parameter.filters",
-                    "data_type": "string",
-                    "contains": [],
-                    "column_name": "filters",
-                    "column_order": 0
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "column_name": "status",
-                    "column_order": 1
+                    "column_order": 0
                 },
                 {
                     "data_path": "action_result.message",
                     "data_type": "string"
                 },
                 {
-                    "data_path": "summary.total_objects",
+                    "data_path": "summary.agent_count",
+                    "data_type": "numeric",
+                    "column_name": "agent_count",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.id",
                     "data_type": "numeric"
                 },
                 {
-                    "data_path": "summary.total_objects_successful",
+                    "data_path": "action_result.data.*.uuid",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio agent uuid"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.platform",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.distro",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.ip",
+                    "data_type": "string",
+                    "contains": [
+                        "ip"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.last_scanned",
+                    "data_type": "numeric",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.plugin_feed_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.core_build",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.core_version",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.linked_on",
+                    "data_type": "numeric",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.last_connect",
+                    "data_type": "numeric",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.status",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.groups.*.id",
                     "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.aws_instance_id",
+                    "data_type": "string",
+                    "contains": [
+                        "aws instance id",
+                        "aws ec2 instance id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.aws_account_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.supports_remote_logs",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.network_uuid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.network_name",
+                    "data_type": "string"
                 }
             ],
             "render": {
@@ -706,14 +798,16 @@
                     "data_path": "action_result.data.*.asset.fqdn",
                     "data_type": "string",
                     "contains": [
-                        "fqdn"
+                        "fqdn",
+                        "domain"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.asset.hostname",
                     "data_type": "string",
                     "contains": [
-                        "hostname"
+                        "hostname",
+                        "host name"
                     ]
                 },
                 {
