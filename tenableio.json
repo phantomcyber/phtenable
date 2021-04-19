@@ -399,38 +399,42 @@
                     "data_type": "string",
                     "required": false,
                     "primary": false,
-                    "contains": [],
-                    "value_list": [],
+                    "contains": [
+                        "cidr"
+                    ],
                     "default": "",
                     "order": 0
                 },
                 "first_found": {
                     "description": "Specifies the earliest time for a vulnerability to have been discovered. Input can be either a timestamp or iso formatted datetime string.",
-                    "data_type": "numeric",
+                    "data_type": "string",
                     "required": false,
                     "primary": false,
-                    "contains": [],
-                    "value_list": [],
+                    "contains": [
+                        "tenableio timestamp"
+                    ],
                     "default": "",
                     "order": 1
                 },
                 "last_fixed": {
                     "description": "Specifies the earliest time that vulnerabilities may have been fixed. Input can be either a timestamp or iso formatted datetime string.",
-                    "data_type": "numeric",
+                    "data_type": "string",
                     "required": false,
                     "primary": false,
-                    "contains": [],
-                    "value_list": [],
+                    "contains": [
+                        "tenableio timestamp"
+                    ],
                     "default": "",
                     "order": 2
                 },
                 "last_found": {
                     "description": "Specifies the earliest time that a vulnerability may have been last seen. Input can be either a timestamp or iso formatted datetime string.",
-                    "data_type": "numeric",
+                    "data_type": "string",
                     "required": false,
                     "primary": false,
-                    "contains": [],
-                    "value_list": [],
+                    "contains": [
+                        "tenableio timestamp"
+                    ],
                     "default": "",
                     "order": 3
                 },
@@ -439,8 +443,9 @@
                     "data_type": "string",
                     "required": false,
                     "primary": false,
-                    "contains": [],
-                    "value_list": [],
+                    "contains": [
+                        "tenableio plugin family"
+                    ],
                     "default": "",
                     "order": 4
                 },
@@ -449,8 +454,9 @@
                     "data_type": "string",
                     "required": false,
                     "primary": false,
-                    "contains": [],
-                    "value_list": [],
+                    "contains": [
+                        "tenableio plugin id"
+                    ],
                     "default": "",
                     "order": 5
                 },
@@ -459,8 +465,9 @@
                     "data_type": "string",
                     "required": false,
                     "primary": false,
-                    "contains": [],
-                    "value_list": [],
+                    "contains": [
+                        "tenableio vuln severity"
+                    ],
                     "default": "",
                     "order": 6
                 },
@@ -469,8 +476,9 @@
                     "data_type": "string",
                     "required": false,
                     "primary": false,
-                    "contains": [],
-                    "value_list": [],
+                    "contains": [
+                        "tenableio vuln state"
+                    ],
                     "default": "",
                     "order": 7
                 },
@@ -479,8 +487,6 @@
                     "data_type": "string",
                     "required": false,
                     "primary": false,
-                    "contains": [],
-                    "value_list": [],
                     "default": "",
                     "order": 8
                 }
@@ -489,63 +495,78 @@
                 {
                     "data_path": "action_result.parameter.cidr_range",
                     "data_type": "string",
-                    "contains": [],
+                    "contains": [
+                        "cidr"
+                    ],
                     "column_name": "cidr_range",
                     "column_order": 0
                 },
                 {
                     "data_path": "action_result.parameter.first_found",
-                    "data_type": "numeric",
-                    "contains": [],
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ],
                     "column_name": "first_found",
                     "column_order": 1
                 },
                 {
                     "data_path": "action_result.parameter.last_fixed",
-                    "data_type": "numeric",
-                    "contains": [],
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ],
                     "column_name": "last_fixed",
                     "column_order": 2
                 },
                 {
                     "data_path": "action_result.parameter.last_found",
-                    "data_type": "numeric",
-                    "contains": [],
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ],
                     "column_name": "last_found",
                     "column_order": 3
                 },
                 {
                     "data_path": "action_result.parameter.plugin_family",
                     "data_type": "string",
-                    "contains": [],
+                    "contains": [
+                        "tenableio plugin family"
+                    ],
                     "column_name": "plugin_family",
                     "column_order": 4
                 },
                 {
                     "data_path": "action_result.parameter.plugin_ids",
                     "data_type": "string",
-                    "contains": [],
+                    "contains": [
+                        "tenableio plugin id"
+                    ],
                     "column_name": "plugin_ids",
                     "column_order": 5
                 },
                 {
                     "data_path": "action_result.parameter.severity",
                     "data_type": "string",
-                    "contains": [],
+                    "contains": [
+                        "tenableio vuln severity"
+                    ],
                     "column_name": "severity",
                     "column_order": 6
                 },
                 {
                     "data_path": "action_result.parameter.state",
                     "data_type": "string",
-                    "contains": [],
+                    "contains": [
+                        "tenableio vuln state"
+                    ],
                     "column_name": "state",
                     "column_order": 7
                 },
                 {
                     "data_path": "action_result.parameter.tags",
                     "data_type": "string",
-                    "contains": [],
                     "column_name": "tags",
                     "column_order": 8
                 },
@@ -560,12 +581,390 @@
                     "data_type": "string"
                 },
                 {
-                    "data_path": "summary.total_objects",
+                    "data_path": "action_result.summary.vuln_count",
+                    "data_type": "numeric",
+                    "column_name": "vuln count",
+                    "column_order": 10
+                },
+                {
+                    "data_path": "action_result.data.*.asset.agent_uuid",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio agent uuid"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.asset.bios_uuid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.asset.device_type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.asset.fqdn",
+                    "data_type": "string",
+                    "contains": [
+                        "fqdn"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.asset.hostname",
+                    "data_type": "string",
+                    "contains": [
+                        "hostname"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.asset.uuid",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio asset uuid"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.asset.ipv4",
+                    "data_type": "string",
+                    "contains": [
+                        "ip"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.asset.last_authenticated_results",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.asset.mac_address",
+                    "data_type": "string",
+                    "contains": [
+                        "mac address"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.asset.operating_system.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.asset.network_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.asset.tracked",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.output",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.bid.*",
                     "data_type": "numeric"
                 },
                 {
-                    "data_path": "summary.total_objects_successful",
+                    "data_path": "action_result.data.*.plugin.cpe.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cve.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss3_base_score",
                     "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss3_temporal_score",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss3_temporal_vector.exploitability",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss3_temporal_vector.remediation_level",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss3_temporal_vector.report_confidence",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss3_temporal_vector.raw",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss3_vector.access_complexity",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss3_vector.access_vector",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss3_vector.availability_impact",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss3_vector.confidentiality_impact",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss3_vector.integrity_impact",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss3_vector.raw",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss_base_score",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss_temporal_score",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss_temporal_vector.exploitability",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss_temporal_vector.remediation_level",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss_temporal_vector.report_confidence",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss_temporal_vector.raw",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss_vector.access_complexity",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss_vector.access_vector",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss_vector.authentication",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss_vector.availability_impact",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss_vector.confidentiality_impact",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss_vector.integrity_impact",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.cvss_vector.raw",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.description",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.exploitability_ease",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.family",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio plugin family"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.family_id",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.has_patch",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.id",
+                    "data_type": "numeric",
+                    "contains": [
+                        "tenableio plugin id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.patch_publication_date",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.modification_date",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.publication_date",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.risk_factor",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.see_also.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.solution",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.synopsis",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.version",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.vuln_publication_date",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.xrefs.*.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.xrefs.*.id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.vpr.score",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.vpr.drivers.age_of_vuln.lower_bound",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.vpr.drivers.age_of_vuln.upper_bound",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.vpr.drivers.exploit_code_maturity",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.vpr.drivers.cvss_impact_score_predicted",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.vpr.drivers.cvss3_impact_score",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.vpr.drivers.threat_intensity_last28",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.vpr.drivers.threat_sources_last28.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.vpr.drivers.product_coverage",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.plugin.vpr.updated",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.port.port",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.port.protocol",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.scan.completed_at",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.scan.schedule_uuid",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.scan.started_at",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.scan.uuid",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio scan uuid"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.severity",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio vuln severity"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.severity_id",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.severity_default_id",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.severity_modification_type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.first_found",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.last_found",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.state",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio vuln state"
+                    ]
                 }
             ],
             "render": {

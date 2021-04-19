@@ -17,6 +17,8 @@ from bs4 import BeautifulSoup
 
 import ast
 import dateutil.parser
+import traceback
+
 from datetime import datetime
 from tenable.io import TenableIO
 
@@ -177,7 +179,7 @@ class TenableioConnector(BaseConnector):
         Returns:
             List representation of parsed input. If input is the empty string, empty list is returned.
         """
-        if input_str == "":
+        if not input_str:
             return []
 
         try:
@@ -209,7 +211,7 @@ class TenableioConnector(BaseConnector):
         """
         parsed_input = None
         try:
-            parsed_input = datetime.fromtimestamp(input_time)
+            parsed_input = datetime.fromtimestamp(int(input_time))
         except Exception:
             try:
                 parsed_input = dateutil.parser.isoparse(input_time)
@@ -235,7 +237,7 @@ class TenableioConnector(BaseConnector):
         except Exception as e:
             action_result.set_status(phantom.APP_ERROR, str(e))
             self.save_progress("Test Connectivity Failed.")
-            self.save_progress(str(e))
+            self.save_progress(traceback.format_exc())
 
         return action_result.get_status()
 
@@ -263,6 +265,7 @@ class TenableioConnector(BaseConnector):
         try:
             response = self._tio.assets.assign_tags(action, parsed_assets, parsed_tags)
         except Exception as e:
+            self.save_progress(traceback.format_exc())
             return action_result.set_status(phantom.APP_ERROR, str(e))
 
         # Add the response into the data section
@@ -296,6 +299,7 @@ class TenableioConnector(BaseConnector):
             tags = self._tio.tags.list()
             data = [tag for tag in tags]
         except Exception as e:
+            self.save_progress(traceback.format_exc())
             return action_result.set_status(phantom.APP_ERROR, str(e))
 
         # Add the response into the data section
@@ -330,12 +334,15 @@ class TenableioConnector(BaseConnector):
             parsed_created_at = int(self._parse_datetime_field(created_at).timestamp()) if created_at else None
             parsed_updated_at = int(self._parse_datetime_field(updated_at).timestamp()) if updated_at else None
 
+            self.save_progress("Starting asset export.")
             assets = self._tio.exports.assets(
                 created_at=parsed_created_at,
                 updated_at=parsed_updated_at
             )
             data = [asset for asset in assets]
+            self.save_progress("Asset export finished.")
         except Exception as e:
+            self.save_progress(traceback.format_exc())
             return action_result.set_status(phantom.APP_ERROR, str(e))
 
         # Add the response into the data section
@@ -374,6 +381,7 @@ class TenableioConnector(BaseConnector):
             agents = self._tio.agents.list(*parsed_filters)
             data = [agent for agent in agents]
         except Exception as e:
+            self.save_progress(traceback.format_exc())
             return action_result.set_status(phantom.APP_ERROR, str(e))
 
         # Add the response into the data section
@@ -408,6 +416,7 @@ class TenableioConnector(BaseConnector):
             vulns = self._tio.scans.results(scan_id)
             data = [vuln for vuln in vulns]
         except Exception as e:
+            self.save_progress(traceback.format_exc())
             return action_result.set_status(phantom.APP_ERROR, str(e))
 
         # Add the response into the data section
@@ -441,6 +450,7 @@ class TenableioConnector(BaseConnector):
             scans = self._tio.scans.list()
             data = [scan for scan in scans]
         except Exception as e:
+            self.save_progress(traceback.format_exc())
             return action_result.set_status(phantom.APP_ERROR, str(e))
 
         # Add the response into the data section
@@ -514,6 +524,7 @@ class TenableioConnector(BaseConnector):
             data = [vuln for vuln in vulns]
             self.save_progress("Vulnerability export finished successfully.")
         except Exception as e:
+            self.save_progress(traceback.format_exc())
             return action_result.set_status(phantom.APP_ERROR, str(e))
 
         # Add the response into the data section
