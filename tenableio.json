@@ -373,11 +373,112 @@
                     "data_type": "string"
                 },
                 {
-                    "data_path": "summary.total_objects",
+                    "data_path": "action_result.summary.scan_count",
+                    "data_type": "numeric",
+                    "column_name": "scan_count",
+                    "column_order": 1   
+                },
+                {
+                    "data_path": "action_result.data.*.template_uuid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.permissions",
                     "data_type": "numeric"
                 },
                 {
-                    "data_path": "summary.total_objects_successful",
+                    "data_path": "action_result.data.*.legacy",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.read",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.last_modification_date",
+                    "data_type": "numeric",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.creation_date",
+                    "data_type": "numeric",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.status",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.uuid",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio scan uuid"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.shared",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.user_permissions",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.owner",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.schedule_uuid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.timezone",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.rrules",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.starttime",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.enabled",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.control",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.wizard_uuid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.policy_id",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio scan policy id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.id",
                     "data_type": "numeric"
                 }
             ],
