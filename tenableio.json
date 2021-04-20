@@ -79,12 +79,10 @@
                     "data_type": "string",
                     "required": true,
                     "primary": false,
-                    "contains": [],
                     "value_list": [
                         "add",
                         "remove"
                     ],
-                    "default": "",
                     "order": 0
                 },
                 "assets": {
@@ -92,8 +90,9 @@
                     "data_type": "string",
                     "required": true,
                     "primary": false,
-                    "contains": [],
-                    "value_list": [],
+                    "contains": [
+                        "tenableio asset uuid"
+                    ],
                     "default": "",
                     "order": 1
                 },
@@ -102,8 +101,9 @@
                     "data_type": "string",
                     "required": true,
                     "primary": false,
-                    "contains": [],
-                    "value_list": [],
+                    "contains": [
+                        "tenableio tag uuid"
+                    ],
                     "default": "",
                     "order": 2
                 }
@@ -119,14 +119,18 @@
                 {
                     "data_path": "action_result.parameter.assets",
                     "data_type": "string",
-                    "contains": [],
+                    "contains": [
+                        "tenableio asset uuid"
+                    ],
                     "column_name": "assets",
                     "column_order": 1
                 },
                 {
                     "data_path": "action_result.parameter.tags",
                     "data_type": "string",
-                    "contains": [],
+                    "contains": [
+                        "tenableio tag uuid"
+                    ],
                     "column_name": "tags",
                     "column_order": 2
                 },
@@ -141,8 +145,10 @@
                     "data_type": "string"
                 },
                 {
-                    "data_path": "summary.assets_updated",
-                    "data_type": "numeric"
+                    "data_path": "action_result.summary.assets_updated",
+                    "data_type": "numeric",
+                    "column_name": "assets_updated",
+                    "column_order": 4
                 }
             ],
             "render": {
@@ -170,12 +176,75 @@
                     "data_type": "string"
                 },
                 {
-                    "data_path": "summary.total_objects",
-                    "data_type": "numeric"
+                    "data_path": "action_result.summary.tag_count",
+                    "data_type": "numeric",
+                    "column_name": "tag_count",
+                    "column_order": 1
                 },
                 {
-                    "data_path": "summary.total_objects_successful",
-                    "data_type": "numeric"
+                    "data_path": "action_result.data.*.uuid",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio tag uuid"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.created_at",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.created_by",
+                    "data_type": "string",
+                    "contains": [
+                        "email",
+                        "tenableio user"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.updated_at",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.updated_by",
+                    "data_type": "string",
+                    "contains": [
+                        "email",
+                        "tenableio user"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.category_uuid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.value",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.description",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.category_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.category_description",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.access_control.current_user_permissions.*",
+                    "data_type": "string"
                 }
             ],
             "render": {
@@ -193,21 +262,23 @@
             "parameters": {
                 "created_at": {
                     "description": "Returns all assets created after the specified date. Input can be either a timestamp or iso formatted datetime string.",
-                    "data_type": "numeric",
+                    "data_type": "string",
                     "required": false,
                     "primary": false,
-                    "contains": [],
-                    "value_list": [],
+                    "contains": [
+                        "tenableio timestamp"
+                    ],
                     "default": "",
                     "order": 0
                 },
                 "updated_at": {
                     "description": "Returns all assets updated after the specified date. Input can be either a timestamp or iso formatted datetime string.",
-                    "data_type": "numeric",
+                    "data_type": "string",
                     "required": false,
                     "primary": false,
-                    "contains": [],
-                    "value_list": [],
+                    "contains": [
+                        "tenableio timestamp"
+                    ],
                     "default": "",
                     "order": 1
                 }
@@ -215,15 +286,19 @@
             "output": [
                 {
                     "data_path": "action_result.parameter.created_at",
-                    "data_type": "numeric",
-                    "contains": [],
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ],
                     "column_name": "created_at",
                     "column_order": 0
                 },
                 {
                     "data_path": "action_result.parameter.updated_at",
                     "data_type": "numeric",
-                    "contains": [],
+                    "contains": [
+                        "tenableio timestamp"
+                    ],
                     "column_name": "updated_at",
                     "column_order": 1
                 },
@@ -238,12 +313,298 @@
                     "data_type": "string"
                 },
                 {
-                    "data_path": "summary.total_objects",
-                    "data_type": "numeric"
+                    "data_path": "action_result.summary.asset_count",
+                    "data_type": "numeric",
+                    "column_name": "asset_count",
+                    "column_order": 3
                 },
                 {
-                    "data_path": "summary.total_objects_successful",
-                    "data_type": "numeric"
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio asset uuid"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.has_agent",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.has_plugin_results",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.created_at",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.terminated_at",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.terminated_by",
+                    "data_type": "string",
+                    "contains": [
+                        "email",
+                        "tenableio user"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.updated_at",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.deleted_at",
+                    "data_type": "string",
+                    "contains": ["tenableio timestamp"]
+                },
+                {
+                    "data_path": "action_result.data.*.deleted_by",
+                    "data_type": "string",
+                    "contains": [
+                        "email",
+                        "tenableio user"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.first_seen",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.last_seen",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.first_scan_time",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.last_scan_time",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.last_authenticated_scan_date",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.last_licensed_scan_date",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.last_scan_id",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio scan uuid"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.last_schedule_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.azure_vm_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.azure_resource_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.gcp_project_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.gcp_zone",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.gcp_instance_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.aws_ec2_instance_ami_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.aws_ec2_instance_id",
+                    "data_type": "string",
+                    "contains": [
+                        "aws instance id",
+                        "aws ec2 instance id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.agent_uuid",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio agent uuid"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.bios_uuid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.network_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.network_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.aws_owner_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.aws_availability_zone",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.aws_region",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.aws_vpc_id",
+                    "data_type": "string",
+                    "contains": [
+                        "aws ec2 vpc id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.aws_ec2_instance_group_name",
+                    "data_type": "string",
+                    "contains": [
+                        "aws ec2 group name"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.aws_ec2_instance_state_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.aws_ec2_instance_type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.aws_subnet_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.aws_ec2_product_code",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.aws_ec2_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.mcafee_epo_guid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.mcafee_epo_agent_guid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.servicenow_sysid",
+                    "data_type": "string",
+                    "contains": [
+                        "servicenow catalog sys id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.bigfix_asset_id",
+                    "data_type": "string",
+                    "contains": [
+                        "bigfix computer id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.ipv4s.*",
+                    "data_type": "string",
+                    "contains": [
+                        "ip"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.fqdns.*",
+                    "data_type": "string",
+                    "contains": [
+                        "fqdn",
+                        "domain"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.mac_addresses.*",
+                    "data_type": "string",
+                    "contains": [
+                        "mac address"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.netbios_names.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.hostnames.*",
+                    "data_type": "string",
+                    "contains": [
+                        "hostname",
+                        "host name"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.sources.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.sources.*.first_seen",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.sources.*.last_seen",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.tags.*",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio tag uuid"
+                    ]
                 }
             ],
             "render": {
@@ -284,7 +645,7 @@
                     "data_type": "string"
                 },
                 {
-                    "data_path": "summary.agent_count",
+                    "data_path": "action_result.summary.agent_count",
                     "data_type": "numeric",
                     "column_name": "agent_count",
                     "column_order": 1
@@ -525,7 +886,11 @@
                 },
                 {
                     "data_path": "action_result.data.*.owner",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "contains": [
+                        "email",
+                        "tenableio user"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.schedule_uuid",
