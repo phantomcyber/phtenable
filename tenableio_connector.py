@@ -413,8 +413,7 @@ class TenableioConnector(BaseConnector):
         # optional_parameter = param.get("optional_parameter", "default_value")
 
         try:
-            vulns = self._tio.scans.results(scan_id)
-            data = [vuln for vuln in vulns]
+            data = self._tio.scans.results(scan_id)
         except Exception as e:
             self.save_progress(traceback.format_exc())
             return action_result.set_status(phantom.APP_ERROR, str(e))
@@ -424,7 +423,8 @@ class TenableioConnector(BaseConnector):
 
         # Add a dictionary that is made up of the most important values from data into the summary
         summary = action_result.update_summary({})
-        summary["vuln_count"] = len(data)
+        summary["scan_name"] = data["info"]["name"]
+        summary["host_count"] = data["info"]["hostcount"]
 
         # Return success, no need to set the message, only the status
         # BaseConnector will create a textual message based off of the summary dictionary
@@ -592,7 +592,7 @@ class TenableioConnector(BaseConnector):
         self._tio = TenableIO(
             config["access_key"],
             config["secret_key"],
-            ssl_verify=config.get("verify_server_cert", False),
+            ssl_verify=config.get("verify_server_cert", True),
             vendor="Splunk",
             product="Phantom",
         )

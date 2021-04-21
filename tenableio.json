@@ -35,13 +35,13 @@
     },
     "configuration": {
         "access_key": {
-            "description": "TIO Access Key",
+            "description": "API Access Key",
             "data_type": "password",
             "required": true,
             "order": 0
         },
         "secret_key": {
-            "description": "TIO Secret Key",
+            "description": "API Secret Key",
             "data_type": "password",
             "required": true,
             "order": 1
@@ -112,7 +112,6 @@
                 {
                     "data_path": "action_result.parameter.action",
                     "data_type": "string",
-                    "contains": [],
                     "column_name": "action",
                     "column_order": 0
                 },
@@ -149,6 +148,10 @@
                     "data_type": "numeric",
                     "column_name": "assets_updated",
                     "column_order": 4
+                },
+                {
+                    "data_path": "action_result.data.*.job_uuid",
+                    "data_type": "string"
                 }
             ],
             "render": {
@@ -768,8 +771,9 @@
                     "data_type": "string",
                     "required": true,
                     "primary": true,
-                    "contains": [],
-                    "value_list": [],
+                    "contains": [
+                        "tenableio scan uuid"
+                    ],
                     "default": "",
                     "order": 0
                 }
@@ -778,27 +782,459 @@
                 {
                     "data_path": "action_result.parameter.scan_id",
                     "data_type": "string",
-                    "contains": [],
+                    "contains": [
+                        "tenableio scan uuid"
+                    ],
                     "column_name": "scan_id",
                     "column_order": 0
                 },
                 {
                     "data_path": "action_result.status",
-                    "data_type": "string",
-                    "column_name": "status",
-                    "column_order": 1
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.message",
                     "data_type": "string"
                 },
                 {
-                    "data_path": "summary.total_objects",
+                    "data_path": "action_result.summary.scan_name",
+                    "data_type": "string",
+                    "column_name": "scan_name",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.summary.host_count",
+                    "data_type": "numeric",
+                    "column_name": "host_count",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.info.owner",
+                    "data_type": "string",
+                    "contains": [
+                        "email",
+                        "tenableio user"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.info.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.info.no_target",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.info.folder_id",
                     "data_type": "numeric"
                 },
                 {
-                    "data_path": "summary.total_objects_successful",
+                    "data_path": "action_result.data.*.info.control",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.info.user_permissions",
                     "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.info.schedule_uuid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.info.edit_allowed",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.info.scanner_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.info.policy",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.info.shared",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.info.object_id",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.info.tag_targets",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.info.acls",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.info.hostcount",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.info.uuid",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio scan uuid"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.info.status",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.info.scan_type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.info.targets",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.info.alt_targets_used",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.info.pci-can-upload",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.info.scan_start",
+                    "data_type": "numeric",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.info.timestamp",
+                    "data_type": "numeric",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.info.is_archived",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.info.reindexing",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.info.agent_count",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.info.agent_targets.*.id",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.info.agent_targets.*.uuid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.info.agent_targets.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.info.scan_end",
+                    "data_type": "numeric",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.info.haskb",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.info.hasaudittrail",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.info.scanner_start",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.info.scanner_end",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.asset_id",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.host_id",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.uuid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.hostname",
+                    "data_type": "string",
+                    "contains": [
+                        "hostname",
+                        "host name"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.progress",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.scanprogresscurrent",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.scanprogresstotal",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.numchecksconsidered",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.totalchecksconsidered",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.severitycount.item.*.count",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.severitycount.item.*.severitylevel",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.severity",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.score",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.info",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.low",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.medium",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.high",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.critical",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.host_index",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.vulnerabilities.*.count",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.vulnerabilities.*.plugin_id",
+                    "data_type": "numeric",
+                    "contains": [
+                        "tenableio plugin id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.vulnerabilities.*.plugin_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.vulnerabilities.*.severity",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.vulnerabilities.*.plugin_family",
+                    "data_type": "string",
+                    "contains": [
+                        "tenableio plugin family"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.vulnerabilities.*.vuln_index",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.filters.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.filters.*.readable_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.filters.*.control.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.filters.*.control.regex",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.filters.*.control.readable_regex",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.filters.*.operators.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.filters.*.group_name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.filters.*.control.maxlength",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.filters.*.control.list.*",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.filters.*.control.list.*.name",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.filters.*.control.list.*.id",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.filters.*.control.list.*.value",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.filters.*.control.list.*.default_group",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.filters.*.control.list.*.owner",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.filters.*.control.list.*.shared",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.filters.*.customControl.*.cstmOpr",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.filters.*.customControl.*.cstmCntrl.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.filters.*.customControl.*.cstmCntrl.regex",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.filters.*.customControl.*.cstmCntrl.readable_regex",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.filters.*.customControl.*.cstmCntrl.maxlength",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.history.*.history_id",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.history.*.owner_id",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.history.*.creation_date",
+                    "data_type": "numeric",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.history.*.last_modification_date",
+                    "data_type": "numeric",
+                    "contains": [
+                        "tenableio timestamp"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.history.*.uuid",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.history.*.type",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.history.*.status",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.history.*.scheduler",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.history.*.alt_targets_used",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.history.*.is_archived",
+                    "data_type": "boolean"
+                },
+                {
+                    "data_path": "action_result.data.*.notes.*.title",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.notes.*.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.remediations.num_cves",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.remediations.num_hosts",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.remediations.num_remediated_cves",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.remediations.num_impacted_hosts",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.remediations.remediations.*.vulns",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.remediations.remediations.*.value",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.remediations.remediations.*.hosts",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.remediations.remediations.*.remediation",
+                    "data_type": "string"
                 }
             ],
             "render": {
