@@ -10,7 +10,7 @@
     "python_version": "3",
     "product_version_regex": ".*",
     "publisher": "Splunk",
-    "license": "Copyright (c) Splunk, 2021",
+    "license": "Copyright 2021 Splunk Inc.",
     "app_version": "1.0.0",
     "utctime_updated": "2021-04-13T21:45:44.901455Z",
     "package_name": "phantom_tenableio",
