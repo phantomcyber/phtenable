@@ -38,3 +38,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
+### Third Party Packages
+
+This repository includes binary (non-source code) blobs of open source subcomponents with separate copyright notices and license. Your use of the source code for these subcomponents is subject to the terms and conditions of the corresponding license(s) contained in the respective subcomponent directory or source file(s).
+
+- [pyTenable]https://github.com/tenable/pyTenable)
+  License: [MIT](https://github.com/tenable/pyTenable/blob/master/LICENSE)
+
+- [restfly](https://github.com/SteveMcGrath/restfly)
+  License: [MIT](https://github.com/SteveMcGrath/restfly/blob/master/LICENSE)
+
+- [Box](https://github.com/cdgriffith/Box)
+  License: [MIT](https://github.com/cdgriffith/Box/blob/master/LICENSE)
