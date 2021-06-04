@@ -42,11 +42,9 @@ limitations under the License.
 
 This repository includes binary (non-source code) blobs of open source subcomponents with separate copyright notices and license. Your use of the source code for these subcomponents is subject to the terms and conditions of the corresponding license(s) contained in the respective subcomponent directory or source file(s).
 
-Package: [pyTenable](https://github.com/tenable/pyTenable)
-License: [MIT](https://github.com/tenable/pyTenable/blob/master/LICENSE)
-
-Package: [restfly](https://github.com/SteveMcGrath/restfly)
-License: [MIT](https://github.com/SteveMcGrath/restfly/blob/master/LICENSE)
-
-Package: [Box](https://github.com/cdgriffith/Box)
-License: [MIT](https://github.com/cdgriffith/Box/blob/master/LICENSE)
+- [pyTenable](https://github.com/tenable/pyTenable)
+    - License: [MIT](https://github.com/tenable/pyTenable/blob/master/LICENSE)
+- [restfly](https://github.com/SteveMcGrath/restfly)
+    - License: [MIT](https://github.com/SteveMcGrath/restfly/blob/master/LICENSE)
+- [Box](https://github.com/cdgriffith/Box)
+    - License: [MIT](https://github.com/cdgriffith/Box/blob/master/LICENSE)
